@@ -1,0 +1,92 @@
+<div>
+  <form [formGroup]="form">
+    <section>
+      <div class="formgrid grid">
+        <div class="field col md:col-4">
+            <label class="block font-bold">Transaction Date</label>
+            <ng-container *ngIf="isReadOnly">
+              <span>{{ TRANSACTION_DATE.value | date }}</span>
+            </ng-container>
+            <ng-container *ngIf="!isReadOnly">
+              <p-calendar formControlName="transactionDate" name="transactionDate" appendTo="body"></p-calendar>
+              <small class="p-error block" *ngIf="hasError(TRANSACTION_DATE)">Invalid Transaction Date</small>
+            </ng-container>
+        </div>
+        <div class="field col md:col-4">
+            <label class="block font-bold">Cost Center</label>
+            <ng-container *ngIf="isReadOnly">
+              <span>{{ COST_CENTER.value }}</span>
+            </ng-container>
+            <ng-container *ngIf="!isReadOnly">
+              <input type="text" name="costCenter" formControlName="costCenter" pInputText />
+              <small class="p-error block" *ngIf="hasError(COST_CENTER)">Invalid Transaction Date</small>
+            </ng-container>
+        </div>
+        <div class="field col md:col-4">
+            <label class="block font-bold">Claim Item</label>
+            <ng-container *ngIf="isReadOnly">
+              <span>{{ CLAIM_ITEM.value }}</span>
+            </ng-container>
+            <ng-container *ngIf="!isReadOnly">
+              <input type="text" name="claimItem" formControlName="claimItem" pInputText />
+              <small class="p-error block" *ngIf="hasError(CLAIM_ITEM)">Invalid Transaction Date</small>
+            </ng-container>
+        </div>
+        <div class="field col md:col-4">
+          <label class="block font-bold">Description</label>
+          <ng-container *ngIf="isReadOnly">
+            <span>{{ DESCRIPTION.value }}</span>
+          </ng-container>
+          <ng-container *ngIf="!isReadOnly">
+            <input type="text" name="description" formControlName="description" pInputText />
+            <small class="p-error block" *ngIf="hasError(DESCRIPTION)">Invalid Transaction Date</small>
+          </ng-container>
+        </div>
+        <div class="field col md:col-4">
+          <label class="block font-bold">Currency</label>
+          <ng-container *ngIf="isReadOnly">
+            <span>{{ CURRENCY.value }}</span>
+          </ng-container>
+          <ng-container *ngIf="!isReadOnly">
+            <p-dropdown [options]="currencies" formControlName="currency" placeholder="Select Currency" 
+              [virtualScroll]="true" [itemSize]="50" appendTo="body"
+              (onChange)="updateTotalAmount()"></p-dropdown>
+            <small class="p-error block" *ngIf="hasError(CURRENCY)">Invalid Transaction Date</small>
+          </ng-container>
+        </div>
+        <div class="field col md:col-4">
+          <label class="block font-bold">Amount</label>
+          <ng-container *ngIf="isReadOnly">
+            <span>{{ AMOUNT.value }}</span>
+          </ng-container>
+          <ng-container *ngIf="!isReadOnly">
+            <p-inputNumber formControlName="amount" mode="currency" [currency]="CURRENCY.value" locale="en-US" (change)="updateTotalAmount()">
+            </p-inputNumber>
+            <small class="p-error block" *ngIf="hasError(AMOUNT)">Invalid Transaction Date</small>
+          </ng-container>
+        </div>
+        <div class="field col md:col-4">
+          <label class="block font-bold">GST</label>
+          <ng-container *ngIf="isReadOnly">
+            <span>{{ GST.value }}</span>
+          </ng-container>
+          <ng-container *ngIf="!isReadOnly">
+            <p-inputNumber formControlName="gst" mode="currency" [currency]="CURRENCY.value" locale="en-US" (change)="updateTotalAmount()">
+            </p-inputNumber>
+          </ng-container>
+        </div>
+        <div class="field col md:col-4">
+            <label class="block font-bold">Exchange Rate</label>
+            <span>{{ exchangeRate | number }}</span>
+        </div>
+        <div class="field col md:col-4">
+            <label class="block font-bold">Total Amount</label>
+            <span>{{ totalAmount | currency:'RM' }}</span>
+        </div>
+      </div>
+    </section>
+    <div class="flex justify-content-end mt-3" *ngIf="!isReadOnly">
+      <p-button label="Save" (click)="save()"></p-button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,32 @@
+<div class="flex justify-content-center mt-5">
+  <div class="surface-card p-4 shadow-2 border-round w-full lg:w-3 text-center ">
+    <div class="text-center mb-5">
+      <div class="text-900 text-3xl font-medium mb-4">My Expense Claims</div>
+      <div class="mb-3">
+        <p-button label="New Expense Claim" (click)="newExpenseClaim()"></p-button>
+      </div>
+      <div class="expense-card-container">
+        <div class="expense-card">
+          <p-card header="{{ expenseClaim.totalAmount | currency:'RM' }}" subheader="Created @ {{ expenseClaim.createdAt | date }}" 
+                  [style]="{'margin-bottom': '2em'}"
+                  *ngFor="let expenseClaim of expenseClaims">
+            <section>
+              <div class="mb-3">
+                <label class="block mb-2">Claim Date</label>
+                <span>{{ expenseClaim.claimDate | date }}</span>
+              </div>
+              <div>
+                <label class="block mb-2">Number of Line</label>
+                <span>{{ expenseClaim?.expenseClaimLines.length || 0 }}</span>
+              </div>
+            </section>
+            <ng-template pTemplate="footer">
+                <p-button label="View" icon="pi pi-eye" (click)="viewDetail(expenseClaim._id)"></p-button>
+                <p-button label="Delete" icon="pi pi-times" styleClass="p-button-secondary" [style]="{'margin-left': '.5em'}" (click)="delete(expenseClaim._id)"></p-button>
+            </ng-template>
+          </p-card>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

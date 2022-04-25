@@ -1,0 +1,87 @@
+<div class="flex justify-content-center mt-5">
+  <div class="surface-card p-4 shadow-2 border-round w-full lg:w-8 text-center ">
+    <div class="text-center mb-5">
+      <div class="text-900 text-3xl font-medium mb-4">Expense Claims</div>
+      <section>
+        <div class="formgrid grid">
+          <div class="field col">
+              <label class="block font-bold">Name</label>
+              <span>{{ userInformation?.fullName }}</span>
+          </div>
+          <div class="field col">
+              <label class="block font-bold">Bank Code (Office - Division)</label>
+              <span>{{ userInformation?.branchCode }}</span>
+          </div>
+          <div class="field col">
+              <label class="block font-bold">Date</label>
+              <ng-container *ngIf="isReadOnly">
+                <span>{{ expenseClaim?.claimDate | date }}</span>
+              </ng-container>
+              <ng-container *ngIf="!isReadOnly && expenseClaim?.claimDate">
+                <p-calendar [(ngModel)]="expenseClaim.claimDate" name="claimDate"></p-calendar>
+              </ng-container>
+          </div>
+        </div>
+      </section>
+      <section>
+        <div class="formgrid grid">
+          <div class="field col">
+              <label class="block font-bold">Bank Code/ Branch Code</label>
+              <span>{{ expenseClaim?.bankCode }}</span>
+          </div>
+          <div class="field col">
+              <label class="block font-bold">Bank Account Number</label>
+              <span>{{ expenseClaim?.bankAccountNumber }}</span>
+          </div>
+          <div class="field col">
+              <label class="block font-bold">Bank Account Name</label>
+              <span>{{ expenseClaim?.bankAccountName }}</span>
+          </div>
+        </div>
+      </section>
+      <section>
+        <div class="flex justify-content-end my-3" *ngIf="!isReadOnly">
+          <p-button label="New Line" (click)="manageLine()"></p-button>
+        </div>
+        <p-table [value]="expenseClaimLines" responsiveLayout="scroll">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Date of Transaction</th>
+              <th>Cost Center</th>
+              <th>GL Code</th>
+              <th>Description</th>
+              <th>Currency</th>
+              <th>Amount</th>
+              <th>GST</th>
+              <th>Exchange Rate</th>
+              <th>Total Amount (RM)</th>
+              <th></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item let-index="rowIndex">
+            <tr>
+              <td>{{ item.transactionDate | date }}</td>
+              <td>{{ item.costCenter }}</td>
+              <td>{{ item.claimItem }}</td>
+              <td>{{ item.description }}</td>
+              <td>{{ item.currencyCode }}</td>
+              <td>{{ item.amount | number:'1.2-2' }}</td>
+              <td>{{ item.gst | number:'1.2-2' }}</td>
+              <td>{{ item.exchangeRate }}</td>
+              <td>{{ item.totalAmount | currency:'RM' }}</td>
+              <td>
+                <span (click)="manageLine(index, item)">
+                  <i class="pi pi-eye cursor-pointer"></i>
+                </span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </section>
+    </div>
+    <div class="flex justify-content-between mt-3">
+      <p-button label="Back to Home" (click)="back()"></p-button>
+      <p-button label="Submit" (click)="onSubmit()" *ngIf="!isReadOnly"></p-button>
+    </div>
+  </div>
+</div>

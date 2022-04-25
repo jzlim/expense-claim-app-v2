@@ -1,0 +1,19 @@
+<div class="flex justify-content-center mt-5">
+  <div class="surface-card p-4 shadow-2 border-round w-full lg:w-3 text-center ">
+    <div class="text-center mb-5">
+      <div class="text-900 text-3xl font-medium mb-3">Expense Claim Web App</div>
+    </div>
+    <form [formGroup]="form">
+      <div class="mb-3">
+        <label class="block font-bold mb-2">Email</label>
+        <input type="email" name="email" pInputText class="w-full" formControlName="email"/>
+      </div>
+      <div class="mb-3">
+        <label class="block font-bold mb-2">Password</label>
+        <input type="password" name="password" pInputText class="w-full" formControlName="password"/>
+      </div>
+      <small class="p-error block" *ngIf="hasError">Invalid Email & Password</small>
+      <p-button label="Sign In" class="w-full" (click)="submit()"></p-button>
+    </form>
+  </div>
+</div>
