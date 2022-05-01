@@ -21,7 +21,7 @@ export class ExpenseClaimComponent implements OnInit, OnDestroy {
   public expenseClaim: ExpenseClaim;
   public expenseClaimLines: ExpenseClaimLine[] = [];
   public userInformation: any;
-  private expenseClaimId: string;
+  private expenseClaimId: number;
   private user: any;
   private ngUnsubscribe: Subject<void> = new Subject<void>();
   constructor(private authService: AuthService, private homeService: HomeService, private router: Router,
@@ -35,7 +35,7 @@ export class ExpenseClaimComponent implements OnInit, OnDestroy {
       if (params.get('id')) {
         // existing expense claim
         this.isReadOnly = true;
-        this.expenseClaimId = params.get('id');
+        this.expenseClaimId = parseInt(params.get('id'));
         this.fetchMasterData();
         this.fetchData();
       } else {
@@ -48,8 +48,8 @@ export class ExpenseClaimComponent implements OnInit, OnDestroy {
 
   initData() {
     this.expenseClaim = {
-      _id: '',
-      userId: this.user._id,
+      id: 0,
+      userId: this.user.id,
       claimDate: new Date(),
       bankAccountName: '',
       bankAccountNumber: '',
@@ -76,7 +76,7 @@ export class ExpenseClaimComponent implements OnInit, OnDestroy {
   }
 
   fetchMasterData(setDefault: boolean = false) {
-    const obs = this.homeService.getUserInformation({ userId: this.user._id });
+    const obs = this.homeService.getUserInformation({ id: this.user.id });
     obs.subscribe(
       (resp: any) => {
         this.userInformation = resp;
@@ -89,7 +89,7 @@ export class ExpenseClaimComponent implements OnInit, OnDestroy {
   }
 
   fetchData() {
-    const obs = this.homeService.getExpenseClaimById({ expenseClaimId: this.expenseClaimId });
+    const obs = this.homeService.getExpenseClaimById({ id: this.expenseClaimId });
     obs.subscribe(
       (resp: any) => {
         this.expenseClaim = resp;
@@ -135,7 +135,7 @@ export class ExpenseClaimComponent implements OnInit, OnDestroy {
   onSubmit() {
     if (this.expenseClaim.claimDate && this.expenseClaimLines.length > 0) {
       const obj = {
-        userId: this.user._id,
+        userId: this.user.id,
         claimDate: this.expenseClaim.claimDate,
         bankAccountName: this.expenseClaim.bankAccountName,
         bankAccountNumber: this.expenseClaim.bankAccountNumber,

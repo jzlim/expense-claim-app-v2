@@ -1,8 +1,8 @@
 import { ExpenseClaimLine } from "./expense-claim-line";
 
 export interface ExpenseClaim {
-  _id: string;
-  userId: string;
+  id: number;
+  userId: number;
   claimDate: Date;
   bankAccountName: string;
   bankAccountNumber: string;

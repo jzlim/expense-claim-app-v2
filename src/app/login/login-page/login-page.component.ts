@@ -38,8 +38,8 @@ export class LoginPageComponent implements OnInit, OnDestroy {
   submit() {
     this.validate();
     if (!this.hasError) {
-      const req = { email: this.email.value, password: this.password.value }
-      const obs = this.loginService.login(req);
+      const obj = { email: this.email.value, password: this.password.value }
+      const obs = this.loginService.login({ user: obj });
       obs.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
         (resp: any) => {
           if (resp?.accessToken) {

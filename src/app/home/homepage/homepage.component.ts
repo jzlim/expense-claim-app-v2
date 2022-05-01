@@ -25,7 +25,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
   }
 
   fetchData() {
-    const obs = this.homeService.getAllExpenseClaims({ userId: this.user._id });
+    const obs = this.homeService.getAllExpenseClaims({ id: this.user.id });
     obs.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
       (resp: any) => {
         this.expenseClaims = resp;
@@ -37,12 +37,12 @@ export class HomepageComponent implements OnInit, OnDestroy {
     this.router.navigate(['./home/expenseClaim']);
   }
 
-  viewDetail(expenseClaimId: string) {
+  viewDetail(expenseClaimId: number) {
     this.router.navigate(['./home/expenseClaim', expenseClaimId]);
   }
 
-  delete(expenseClaimId: string) {
-    const obs = this.homeService.deleteExpenseClaim({ expenseClaimId });
+  delete(expenseClaimId: number) {
+    const obs = this.homeService.deleteExpenseClaim({ id: expenseClaimId });
     obs.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
       (resp: any) => {
         this.fetchData();

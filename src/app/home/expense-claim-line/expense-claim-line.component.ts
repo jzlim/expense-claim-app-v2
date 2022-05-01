@@ -4,7 +4,6 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subject, takeUntil } from 'rxjs';
 import { DEFAULT_CURRENCY } from 'src/app/core/constants/constants';
 import { ExpenseClaimLine } from 'src/app/core/model/expense-claim-line';
-import { AuthService } from 'src/app/core/service/auth.service';
 import { HomeService } from '../home.service';
 
 @Component({
@@ -16,17 +15,17 @@ export class ExpenseClaimLineComponent implements OnInit, OnDestroy {
   public form: FormGroup
   public expenseClaimLine: ExpenseClaimLine;
 
+  public claimItems: any = [];
   public currencies: any = [];
   public selectedCurrency: any;
   public exchangeRate: number = 1;
-  public totalAmount: number;
+  public totalAmount: number = 0;
 
   public isSubmitted: boolean;
   public isReadOnly: boolean;
-  private user: any;
   private ngUnsubscribe: Subject<void> = new Subject<void>();
   constructor(private ref: DynamicDialogRef, private dialogConfig: DynamicDialogConfig, private homeService: HomeService,
-    private authService: AuthService, private fb: FormBuilder) { }
+    private fb: FormBuilder) { }
 
   ngOnInit(): void {
     this.expenseClaimLine = this.dialogConfig.data.expenseClaimLine;
@@ -34,11 +33,9 @@ export class ExpenseClaimLineComponent implements OnInit, OnDestroy {
     this.isReadOnly = this.dialogConfig.data.isReadOnly;
 
     this.buildForm();
-    if (this.expenseClaimLine) {
-      this.setData(this.expenseClaimLine);
-    } else {
-      this.setCurrency(DEFAULT_CURRENCY);
-    }
+    this.fetchMasterData();
+
+    this.setCurrency(DEFAULT_CURRENCY);
     this.setupCurrencyConversionTrigger();
   }
 
@@ -46,27 +43,38 @@ export class ExpenseClaimLineComponent implements OnInit, OnDestroy {
     this.form = this.fb.group({
       transactionDate: [null, Validators.required],
       costCenter: ['', Validators.required],
-      claimItem: ['', Validators.required],
-      description: ['', Validators.required],
+      claimItem: [null, Validators.required],
       currency: [null, Validators.required],
       amount: [0, Validators.required],
       gst: [0, Validators.required]
     })
   }
 
+  fetchMasterData() {
+    const obs = this.homeService.getClaimItems();
+    obs.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
+      (resp: any) => {
+        this.claimItems = resp;
+        if (this.expenseClaimLine) {
+          this.setData(this.expenseClaimLine);
+        }
+      }
+    )
+  }
+
   setData(expenseClaimLine: ExpenseClaimLine) {
     this.TRANSACTION_DATE.setValue(new Date(expenseClaimLine.transactionDate));
     this.COST_CENTER.setValue(expenseClaimLine.costCenter);
-    this.CLAIM_ITEM.setValue(expenseClaimLine.claimItem);
-    this.DESCRIPTION.setValue(expenseClaimLine.description);
 
+    const selectedClaimItem = this.claimItems.find(x => x.id === expenseClaimLine.id);
+    this.CLAIM_ITEM.setValue(selectedClaimItem);
     const selectedCurrency = this.currencies.find(x => x === expenseClaimLine.currencyCode);
     this.setCurrency(selectedCurrency);
 
     this.AMOUNT.setValue(expenseClaimLine.amount);
     this.GST.setValue(expenseClaimLine.gst);
     this.exchangeRate = expenseClaimLine.exchangeRate;
-    this.totalAmount = expenseClaimLine.totalAmount;
+    // this.totalAmount = expenseClaimLine.totalAmount;
   }
   
   setCurrency(currency: string) {
@@ -131,8 +139,7 @@ export class ExpenseClaimLineComponent implements OnInit, OnDestroy {
       const obj = {
         transactionDate: this.TRANSACTION_DATE.value,
         costCenter: this.COST_CENTER.value,
-        claimItem: this.CLAIM_ITEM.value,
-        description: this.DESCRIPTION.value,
+        claimItemId: this.CLAIM_ITEM.value.id,
         currencyCode: this.CURRENCY.value,
         amount: this.AMOUNT.value,
         gst: this.GST.value,
@@ -155,7 +162,6 @@ export class ExpenseClaimLineComponent implements OnInit, OnDestroy {
   get TRANSACTION_DATE() { return this.form.get('transactionDate') }
   get COST_CENTER() { return this.form.get('costCenter') }
   get CLAIM_ITEM() { return this.form.get('claimItem') }
-  get DESCRIPTION() { return this.form.get('description') }
   get CURRENCY() { return this.form.get('currency') }
   get AMOUNT() { return this.form.get('amount') }
   get GST() { return this.form.get('gst') }

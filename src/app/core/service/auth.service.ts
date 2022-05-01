@@ -11,7 +11,7 @@ export class AuthService {
     localStorage.setItem('access_token', resp.accessToken);
     localStorage.setItem('username', resp.user.username);
     localStorage.setItem('email', resp.user.email);
-    localStorage.setItem('_id', resp.user._id);
+    localStorage.setItem('id', resp.user.id);
   }
 
   logout() {
@@ -22,7 +22,7 @@ export class AuthService {
     return {
       username: localStorage.getItem('username'),
       email: localStorage.getItem('email'),
-      _id: localStorage.getItem('_id')
+      id: localStorage.getItem('id')
     };
   }
 }

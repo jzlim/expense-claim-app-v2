@@ -21,8 +21,8 @@
               </div>
             </section>
             <ng-template pTemplate="footer">
-                <p-button label="View" icon="pi pi-eye" (click)="viewDetail(expenseClaim._id)"></p-button>
-                <p-button label="Delete" icon="pi pi-times" styleClass="p-button-secondary" [style]="{'margin-left': '.5em'}" (click)="delete(expenseClaim._id)"></p-button>
+                <p-button label="View" icon="pi pi-eye" (click)="viewDetail(expenseClaim.id)"></p-button>
+                <p-button label="Delete" icon="pi pi-times" styleClass="p-button-secondary" [style]="{'margin-left': '.5em'}" (click)="delete(expenseClaim.id)"></p-button>
             </ng-template>
           </p-card>
         </div>

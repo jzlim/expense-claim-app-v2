@@ -1,9 +1,10 @@
+import { ClaimItem } from "./claim-item";
+
 export interface ExpenseClaimLine {
-  _id: string;
+  id: number;
   transactionDate: Date;
   costCenter: string;
-  claimItem: string;
-  description: string;
+  claimItem: ClaimItem;
   currencyCode: string;
   amount: number;
   gst: number;
